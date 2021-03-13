@@ -1,10 +1,8 @@
-import React from 'react';
-import {useHistory} from 'react-router-dom'; 
+import React from 'react'; 
 
-function Login({onFailInfoTooltip, onLogin}) {
+function Login({onLogin}) {
   const initialData={email: '', password: ''}
   const [data, setData]=React.useState(initialData);
-  const history=useHistory();
 
   const handleChange = (evt) => {
     const {name, value}=evt.target;
@@ -14,23 +12,15 @@ function Login({onFailInfoTooltip, onLogin}) {
     }));
   }
 
-  const resetForm = () => {
-    setData(initialData);
-  }
-
   const handleSubmit = (evt) => {
     evt.preventDefault();
     if (!data.email || !data.password) {
-      onFailInfoTooltip();
       return;
     }
     
     onLogin(data)
-      .then(resetForm)
-      .then(() => history.push('/main'))
       .catch(err => {
         console.log(`Пользователь с email не найден: ${err}`);
-        onFailInfoTooltip();
       })
   }
 

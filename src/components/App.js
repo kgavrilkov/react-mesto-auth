@@ -13,8 +13,7 @@ import {CurrentUserContext} from '../contexts/CurrentUserContext';
 import {Route, Switch, Redirect, useHistory} from 'react-router-dom';
 import Login from './Login';
 import Register from './Register';
-import SuccessInfoTooltip from './SuccessInfoTooltip';
-import FailInfoTooltip from './FailInfoTooltip';
+import InfoTooltip from './InfoTooltip';
 import ProtectedRoute from './ProtectedRoute';
 import * as auth from '../utils/auth';     
 
@@ -25,9 +24,9 @@ function App() {
   const [selectedCard, setSelectedCard]=React.useState();
   const [currentUser, setCurrentUser]=React.useState({name: '', about: ''});
   const [cards, setCards]=React.useState([]);
-  const [isSuccessInfoTooltipOpen, setIsSuccessInfoTooltipOpen]=React.useState(false);
-  const [isFailInfoTooltipOpen, setIsFailInfoTooltipOpen]=React.useState(false);
+  const [isInfoTooltipOpen, setIsInfoTooltipOpen]=React.useState(false);
   const [loggedIn, setLoggedIn]=React.useState(false);
+  const [isRegistered, setIsRegistered]=React.useState(false);
   const initialData={email: '', password: ''};
   const [data, setData]=React.useState(initialData);
   const history=useHistory();
@@ -83,12 +82,8 @@ function App() {
     setSelectedCard(card);
   }
 
-  function handleSuccessInfoTooltipClick() {
-    setIsSuccessInfoTooltipOpen(true);
-  }
-
-  function handleFailInfoTooltipClick() {
-    setIsFailInfoTooltipOpen(true);
+  function handleInfoTooltipClick() {
+    setIsInfoTooltipOpen(true);
   }
 
   function handleUpdateUser(info) {
@@ -117,18 +112,19 @@ function App() {
 
   const handleRegister = ({email, password}) => {
     return auth.register(email, password).then(res => {
-      if (!res || res.statusCode === 400) throw new Error('Некорректно заполнено одно из полей');
-      handleSuccessInfoTooltipClick();
+      setIsRegistered(true);
+      handleInfoTooltipClick();
+      history.push('/signin');
       return res;
     });
   }
 
   const handleLogin = ({email, password}) => {
     return auth.authorize(email, password).then(res => {
-      if (!res || res.statusCode === 401) throw new Error('Пользователь с email не найден');
       if (res.token) {
-        setLoggedIn(true);
         localStorage.setItem('token', res.token);
+        setLoggedIn(true);
+        history.push('/main');
       };
       return res;
     });
@@ -139,7 +135,6 @@ function App() {
     if (token) {
       auth.getContent(token)
         .then((res) => {
-          if (!res || res.statusCode === 401) throw new Error('Токен не передан или переданный токен некорректен');
           if (res) {
             setLoggedIn(true);
             setData({
@@ -160,6 +155,7 @@ function App() {
     localStorage.removeItem('token');
     setData(initialData);
     setLoggedIn(false);
+    setIsRegistered(false);
     history.push('/signin');
   }
 
@@ -168,8 +164,7 @@ function App() {
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setSelectedCard();
-    setIsSuccessInfoTooltipOpen(false);
-    setIsFailInfoTooltipOpen(false);
+    setIsInfoTooltipOpen(false);
   }
 
   return (
@@ -195,13 +190,12 @@ function App() {
             />
             <Route path="/signin">
               <Login
-                onFailInfoTooltip={handleFailInfoTooltipClick}
                 onLogin={handleLogin}
               />
             </Route>
             <Route path="/signup">
               <Register
-                onFailInfoTooltip={handleFailInfoTooltipClick}
+                onInfoTooltip={handleInfoTooltipClick}
                 onRegister={handleRegister} 
               />
             </Route>
@@ -232,12 +226,9 @@ function App() {
           <DeleteCardPopup
             onClose={closeAllPopups}
           />
-          <SuccessInfoTooltip
-            isOpen={isSuccessInfoTooltipOpen}
-            onClose={closeAllPopups} 
-          />
-          <FailInfoTooltip
-            isOpen={isFailInfoTooltipOpen}
+          <InfoTooltip
+            isRegistered={isRegistered}
+            isOpen={isInfoTooltipOpen}
             onClose={closeAllPopups} 
           />
         </CurrentUserContext.Provider>

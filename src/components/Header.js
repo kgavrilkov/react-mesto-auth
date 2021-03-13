@@ -42,7 +42,7 @@ function Header({userEmail, onSignOut, loggedIn}) {
         <header className="header page__header">
           <div className="header__container header__container_type_login">
             <img className="logo header__logo" src={logoPath} alt="Логотип" />
-            <ul className="header__list header__list_type_login">
+            <ul className="header__list header__list_type_login"> 
               <li className="header__list-item header__list-item_type_login">
                 <Link className="header__link" to="/signup">Регистрация</Link>
               </li>
@@ -54,7 +54,7 @@ function Header({userEmail, onSignOut, loggedIn}) {
         <header className="header page__header">
           <div className="header__container header__container_type_login">
             <img className="logo header__logo" src={logoPath} alt="Логотип" />
-            <ul className="header__list header__list_type_login">
+            <ul className="header__list header__list_type_login"> 
               <li className="header__list-item header__list-item_type_login">
                 <Link className="header__link" to="/signin">Войти</Link>
               </li>

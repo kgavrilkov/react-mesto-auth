@@ -1,10 +1,9 @@
 import React from 'react';
-import {Link, useHistory} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
-function Register({onFailInfoTooltip, onRegister}) {
+function Register({onInfoTooltip, onRegister}) {
   const initialData={email: '', password: ''};
   const [data, setData]=React.useState(initialData);
-  const history=useHistory();
 
   const handleChange = (evt) => {
     const {name, value}=evt.target;
@@ -14,23 +13,17 @@ function Register({onFailInfoTooltip, onRegister}) {
     }));
   }
 
-  const resetForm = () => {
-    setData(initialData);
-  }
-
   const handleSubmit = (evt) => {
     evt.preventDefault();
     if (!data.email || !data.password) {
-      onFailInfoTooltip();
+      onInfoTooltip();
       return;
     }
 
     onRegister(data)
-      .then(resetForm)
-      .then(() => history.push('/signin'))
       .catch(err => {
         console.log(`Некорректно заполнено одно из полей: ${err}`); 
-        onFailInfoTooltip();
+        onInfoTooltip();
       })
   }    
 
