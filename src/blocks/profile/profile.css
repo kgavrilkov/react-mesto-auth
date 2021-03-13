@@ -7,7 +7,7 @@
 @media screen and (max-width: 1070px) {
   .profile {
     grid-template-columns: 120px calc(100% - 150px);
-}
+  }
 }
 
 @media screen and (max-width: 895px) {

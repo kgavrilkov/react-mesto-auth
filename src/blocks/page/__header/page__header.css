@@ -14,9 +14,9 @@
   }
 }
 
-@media screen and (max-width: 510px) {
+@media screen and (max-width: 580px) {
   .page__header {
-    margin: 45px 50px 40px;
+    margin: 45px 0px 40px;
   }
 }
 
